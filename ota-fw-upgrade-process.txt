@@ -1,0 +1,31 @@
+GEA OTA Firmware Upgrade Process:
+
+1. Appliance wakeup
+
+2. Appliance discovery
+	model number discovery
+	serial number discovery
+	appliance type discovery
+
+3. Start appliance upgrade
+	check board version to upgrade
+	enter bootloader mode to upgrade
+	check board types to upgrade
+	start bootloader heartbeat
+	check application header
+	request mtu and byte alignment
+	start board upgrade
+		prepare to download
+		enable programming
+		erase flash
+		write flash
+		reset board
+	check if in bootloader mode
+	check if valid app
+	comparing appliance image
+	reset wait state
+
+4. Post upgrade check
+	Successful upgrade reset
+	Wait after state
+

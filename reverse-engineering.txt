@@ -1,0 +1,75 @@
+Reverse engineering the GEA Bus
+
+Electrical characteristics:
+
+Logic level:		5V
+Baud rate:		19200 (GEA2) or 230400 (GEA3)
+Duplex:		Half for 19200 (GEA2), full for 230400 (GEA3)
+Logic orientation:	Inverted (GEA2) or non-inverted (GEA3)
+
+ERD: Entity Reference Designator
+Endpoint: A board or device on the bus
+Entity: An attribute of an Erd that should be read or written.
+
+Basic packet structure:
+|----------------------Header------------------------||-Data-||--Checksum--||--Footer---|
+[start byte][destination][length][source][erd command][data..][crc16][crc16][end byte(s)]
+
+Erd commands:
+0xF0	Read Erd(s)
+0xF1	Write Erd(s)
+0xF2	Subscribe to Erd(s)
+0xF3	List subscribed Erd(s)
+0xF4	Unsubscribe from Erd(s)
+0xF5	Publish notification of changed Erd(s)
+
+Querying/modifying Erds:
+[stx][destination][length][source][Erd_cmd][MSB_Erd][LSB_Erd][data..][msb_crc16][lsb_crc16][etx]
+
+GEA messages with Erd multiple messages (EMMs):
+[stx][destination][length][source][Erd_cmd][Num_Erds][MSB_Erd1][LSB_Erd1][Erd1_Data_len][Erd1_Data][MSB_Erdn][LSB_Erdn][Erdn_Data_len][Erdn_Data]...[MSB_crc16][LSB_crc16][etx]
+
+Board addresses for some different appliances:
+
+==============================REFRIGERATORS:======================================
+
+Addressing on bottom-freezer refrigerators:
+0x00	Main board
+0x01	RFID water filter reader
+0x02	Dispenser board
+0x03	Door board
+0x04	Feature board
+0xBF	WiFi module
+0xCB	Reserved for Green/Gray/Blue Bean devices
+0xFF	Broadcast (same for all appliances)
+
+==============================RANGES:=============================================
+
+Addressing on ranges:
+0x80	Main board (TO-20, RC-15, RC-17)
+0xbf	WiFi module
+0x87	Induction generator board 1
+0x88	Induction generator board 2
+
+==============================DRYERS:=============================================
+
+Addressing on 2019 dryers:
+0xc0	Main board
+0x25	User interface (captouch)
+0xbf	WiFi module
+
+==============================WASHERS:============================================
+
+Addressing on 2019 washers:
+0xc0	Main board
+0x25	User interface (captouch)
+0x3f	Inverter board (290d2861)
+0xbf	WiFi module
+
+==============================DISHWASHERS:========================================
+
+Addressing on dishwashers:
+0x46	Main board (DishMC)
+0x5f	User interface
+0x45	Inverter board
+0xbf	WiFi module

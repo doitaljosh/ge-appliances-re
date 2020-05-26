@@ -1,0 +1,92 @@
+GEA Inverter messages:
+
+Load agitate profile:
+
+Erd command: 0xf0 (write)
+Number of erds to write: 0x01
+Erd: 0xf032
+Entity length: 0x08
+1000ms ramp-up time
+1000rpm target speed
+500ms plateau time
+1000ms pause time
+
+Message:
+{0xe2, 0x3f, 0x15, 0xcb, 0xf0, 0x01, 0xf0, 0x32, 0x08, 0x03, 0xe8, 0x03, 0xe8, 0x01, 0xf4, 0x03, 0xe8, 0x, 0x, 0xe3, 0xe1}
+
+Message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, WRITE_ERD, NUM_ERDS, MSB_ERD, LSB_ERD, ENT_LEN, MSB_RAMPUP_T, LSB_RAMPUP_T, MSB_TGT_SPD, LSB_TGT_SPD, MSB_PLT_T, LSB_PLT_T, MSB_PAUSE_T, LSB_PAUSE_T, MSB_CRC, LSB_CRC, ETX, ACK}
+
+Run agitate profile:
+
+Erd command: 0xf1 (write)
+Number of erds to write: 0x0	
+Erd: 0xf030
+Entity length: 0x02
+Run time: No time limit (0ms)
+
+Message:
+{0xe2, 0x3f, 0x0e, 0xcb, 0xf1, 0x01, 0xf0, 0x30, 0x02, 0x00, 0x00, 0x, 0x, 0xe3, 0xe1}
+
+Message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, WRITE_ERD, NUM_ERDS, MSB_ERD, LSB_ERD, ENT_LEN, MSB_RUN_T, LSB_RUN_T, MSB_CRC, LSB_CRC, ETX, ACK}
+
+Load spin profile:
+
+Erd command: 0xf1 (write)
+Number of erds to write: 0x0
+Erd: 0xf033
+Entity length: 0x06
+Ramp up rate: 100rpm/s
+Target speed: 1000rpm
+Direction: CW
+
+Message:
+{0xe2, 0x3f, 0x12, 0xcb, 0xf1, 0x01, 0xf0, 0x33, 0x06, 0x00, 0x64, 0x03, 0xe8, 0x00, 0x00, 0x, 0x, 0xe3, 0xe1}
+
+Message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, WRITE_ERD, NUM_ERDS, MSB_ERD, LSB_ERD, ENT_LEN, MSB_RAMPUP_RT, LSB_RAMPUP_RT, MSB_TGT_SPD, LSB_TGT_SPD, MSB_DIR, LSB_DIR, MSB_CRC, LSB_CRC, ETX, ACK}
+
+Run spin profile:
+
+Erd command: 0xf1 (write)
+Number of erds to write: 0x0
+Erd: 0xf031
+Entity length: 0x02
+Run time: no time limit (0ms)
+
+Message:
+{0xe2, 0x3f, 0x0e, 0xcb, 0xf1, 0x01, 0xf0, 0x31, 0x02, 0x03, 0x00, 0x, 0x, 0xe3, 0xe1}
+
+Message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, WRITE_ERD, NUM_ERDS, MSB_ERD, LSB_ERD, ENT_LEN, MSB_RUN_T, LSB_RUN_T, MSB_CRC, LSB_CRC, ETX, ACK}
+
+Stop motor operation:
+
+Erd command: 0xf1 (write)
+Number of erds to write: 0x0
+Erd: 0xf034
+Entity length: 0x02
+
+Message:
+{0xe2, 0x3f, 0x0e, 0xcb, 0xf1, 0x01, 0xf0, 0x34, 0x02, 0x00, 0x01, 0x, 0x, 0xe3, 0xe1}
+
+Message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, WRITE_ERD, NUM_ERDS, MSB_ERD, LSB_ERD, ENT_LEN, MSB_STOP_BOOL, LSB_STOP_BOOL, MSB_CRC, LSB_CRC, ETX, ACK}
+
+Read power, driving speed, and actual speed ERDs:
+
+Erd command: 0xf0 (read)
+Number of erds to read: 0x03
+Erds: {0xf30a(entity uint32_t), 0xf315(entity uint16_t), 0xf310(entity uint16_t)}
+Read request message:
+{0xe2, 0x3f, 0x0d, 0xcb, 0xf0, 0x03, 0xf3, 0x0a, 0xf3, 0x15, 0xf3, 0x10, 0x, 0x, 0xe3, 0xe1}
+
+Read request message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, READ_ERD, NUM_ERDS, MSB_ERD1, LSB_ERD1, MSB_ERD2, LSB_ERD2, MSB_ERD3, LSB_ERD3, MSB_CRC, LSB_CRC, ETX, ACK}
+
+Read response message: (example: 50% power, 1000rpm driving speed, 998rpm actual speed)
+{0xe2, 0xcb, 0x1a, 0x3f, 0xf0 0x03, 0xf3, 0x0a, 0x04, 0x00, 0x00, 0x00, 0x32, 0xf3, 0x15, 0x02, 0x03, 0xe8, 0xf3, 0x10, 0x02, 0x03, 0xe6, 0x, 0x, 0xe3, 0xe1}
+
+Read response message format:
+{STX, INV_ADDR, LEN, SRC_ADDR, READ_ERD, NUM_ERDS, MSB_ERD1, LSB_ERD1, ENT1_LEN, MSB_ENT1, B2_ENT1, B3_ENT1, LSB_ENT1, MSB_ERD2, LSB_ERD2, ENT2_LEN, MSB_ENT2, LSB_ENT2, MSB_ERD3, LSB_ERD3, ENT3_LEN, MSB_ENT3, LSB_ENT3, MSB_CRC, LSB_CRC, ETX, ACK}
