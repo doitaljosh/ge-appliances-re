@@ -1,0 +1,17 @@
+GE Induction Cooktop Power Board debug header pins:
+
+J701:
+    _____________________
+19 | o o o o o o o o o □ |1
+20 | o o o o o o o o o o |2
+    ¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯
+1. VDD +5V		11. NC
+2. VDD +5V		12. GND
+3. JTAG TRST		13. JTAG TDO
+4. GND			14. GND
+5. JTAG TDI		15. SWD NRST
+6. GND			16. GND
+7. JTAG TMS | SWD SWDIO	17. NC
+8. GND			18. GND
+9. JTAG TCK | SWD SWCLK	19. NC
+10. GND			20. GND

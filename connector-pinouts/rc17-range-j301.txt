@@ -1,0 +1,25 @@
+GEA RC17 Debug Connector:
+
+Top side:
+1. NC
+2. NC
+3. NC
+4. NC
+5. NC
+6. NC
+7. NC
+8. NC
+9. NC
+10. NC
+
+Bottom side:
+1. GEA2
+2. NC
+3. TXD1
+4. RXD1
+5. GND
+6. XRES#
+7. MD/FINED
+8. NC
+9. UB
+10. +5V

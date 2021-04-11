@@ -1,0 +1,60 @@
+GE Appliances Renesas RX MCU Debug/Test Connectors:
+
+10-pin washer edge connector:
+
+1.	STM8_NRST
+2.	9V
+3.	TXD1
+4.	RXD1
+5.	5V
+6.	RES#
+7.	MD_FINED
+8.	STM8_SWIM
+9.	NC
+10.	GND
+
+10-pin dryer edge connector:
+
+1.	NC
+2.	13V
+3.	UB
+4.	RXD1
+5.	GND
+6.	RES#
+7.	MD_FINED
+8.	NC
+9.	TXD1
+10.	5V
+
+10-pin range edge connector:
+
+1.	GEA2_I
+2.	NC
+3.	TXD1
+4.	RXD1
+5.	GND
+6.	RES#
+7.	MD_FINED
+8.	NC
+9.	UB
+10.	5V
+
+Boot mode selection:
+(USB mode: MD=0,UB=1 | SCI (uart) mode: MD=0,UB=0)
+
+Flashing over UART with Renesas RFP tool: (Use SCI mode)
+
+Target           Logic              FT232H 
+GND  ---------------------------->  GND
+
+MD   ---------------------------->  GND
+
+UB   ---------------------------->  GND
+
+RXD1 <----------------------------  TXD
+
+TXD1 ---------------------------->  RXD
+
+RES# <-- (Output|74LS04|Input) <--  RTS
+
++5V  <----------------------------  +5V

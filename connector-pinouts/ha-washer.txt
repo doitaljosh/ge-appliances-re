@@ -1,0 +1,33 @@
+HA_IMC-H 2013 debug connectors:
+
+Micro:		Device:	Function:
+MC:		R5F2318ANFP	Main machine control for FSM and cycle engine
+Redundant:	MC9S08QD4	Redundant MCU for thermistor ADC
+Inverter:	STM32F103RBT6	Motor drive
+
+MC connector pinout:
+1.	5V
+2.	TXD2
+3.	RXD2
+4.	MD
+5.	#RESET
+6.	Isolated GND
+7.	Redundant MC BDM
+8.	Redundant MC Reset
+9.	7.5V
+10.	NC
+
+Inverter connector pinout:
+1.	3.3V
+2.	Reset/JTRST
+3.	USART2_RXD
+4.	USART2_TXD
+5.	SWD_SWO/JTDO
+6.	SWD_CLK/JTCK
+7.	SWD_DIO/JTMS
+8.	16.2V
+9.	NC
+10.	Gnd
+
+NOTE to engineers:
+The silkscreen board markings next to the pins are WRONG!

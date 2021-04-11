@@ -1,0 +1,51 @@
+GEA reverse engineering for new 4-door Profile/Cafe models
+
+Addresses: (Almost the same as the older bottom freezer fridges.)
+0x00 - Machine control
+0x02 - Dispenser display
+0x03 - Door board
+0x0b - Temp select zone UI (NEW)
+0xbf - WiFi module
+
+Play tones on dispenser display:
+(Sent to dispenser display at address 0x02)
+
+Format: [e2][02][0b][src][cf = play tone cmd][0b = preset tone mode][00][toneValue][crc16][e3]
+
+Tone:		toneValue:
+Water		00
+Crushed		01
+Cubed		02
+Door ajar	03
+Function on	04
+Function off	05
+WiFi on		06
+WiFi off	07
+Increase value	08
+Decrease value	09
+Success		0a
+Error		0b
+Key pressed	0c
+Unknown on	0d
+Unknown off	0e
+Software crash	0f (funny easter egg)
+Haptic feedback	10
+Start process	11
+Autofill done	12
+Interrupt tone	13
+
+Convertible zone mode select:
+(Sent to MC at address 0x00 from convertible UI at address 0x0d)
+
+Format: [e2][00][0b][0d][6b = conv zone][uint8 modeValue][uint16 tempSetPoint][crc16][e3]
+
+Mode		modeValue:	tempSetPoint:	Displayed temp:
+Meat		03 		0ce4 = 33*100	29
+Beverages	04 		0e74 = 37*100	33
+Snacks		05 		1068 = 42*100	37
+Wine		06 		2710 = 100*100	42
+
+Set target temperature:
+(Sent to MC from dispenser display)
+
+Format: [e2][00][0b][02][a5 = set temp][int8 FF temp][int8 FZ temp][crc16][e3]

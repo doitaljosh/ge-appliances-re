@@ -1,0 +1,18 @@
+Advantium Built-in Smart Board
+
+MCU: TMPM381FWFG
+Flash: 0x0 - 0x40000 (256KB)
+
+CN20 pinout
+
+1 - RVDD5
+2 - SWDIO
+3 - SWCLK
+4 - #RESET
+5 - GND
+6 - RVDD5
+7 - #BOOT
+8 - TXD0
+9 - RXD0
+10 - NC
+11 - GND

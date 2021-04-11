@@ -1,0 +1,131 @@
+GE Cafe Erds
+
+Common:
+
+Erd:	Function:
+0x0004	LockStatus
+0x0006	ClockFormat
+0x0007	TempUnit
+0x0009	
+0x000A	SoundLevel
+0x0051	
+0x0100
+0x0103
+0x510A
+
+Advantium:
+
+Erd:	Function:			
+0x0035	UnitType			RW
+0x0050					
+0x5109					
+0x5400	Set CookMode			RW
+	1: Broil
+	2: ConvectionBake
+	3: Microwave
+	4: MicrowaveSensor
+	5: PrecisionCook
+	6: PrecisionCookCustom
+	7: PrecisionCookStaged
+	8: Proof
+	9: RemoteCookModeConfig
+	10: SteamClean
+	11: Toast
+	12: Warm
+0x5401	Oven Status 1				R
+	1: CookAction
+	2: CookMode
+	3: CoolingFanStatus
+	4: DoorStatus
+	5: OvenLightStatus
+	6: PreheatStatus
+	7: SensingActive
+	8: TerminationReason
+	9: WarmStatus
+0x5402	Oven Status 2
+	1: CookAction
+	2: CookMode
+	3: CoolingFanStatus
+	4: DoorStatus
+	5: OvenLightStatus
+	6: PreheatStatus
+	7: SensingActive
+	8: TerminationReason
+	9: WarmStatus
+
+Laundry:
+
+Erd:	Function:
+0x2000	StateDetail
+0x2001	SubCycle
+0x2007	
+0x2008	
+	1: labelFirstTank
+	2: labelSecondTank
+	3: statusFirstTank
+	4: statusSecondTank
+0x2009
+	1: isFirstTankEnable
+	2: isSecondTankEnable
+	3: labelFirstTank
+	4: labelSecondTank
+0x200A	Cycle
+0x2010	
+0x2014	IsEnable
+0x2015	SoilLevel
+0x2016	TempLevel
+0x2017	SpinTimeLEvel
+0x2018	RinseOption
+0x2019	Option
+0x201A	DrynessLevel
+0x201B	IsExtendedTumble
+0x2020	SelectedCycle
+0x2021
+0x2022
+	1: extraLargeLoadSize
+	2: largeLoadSize
+	3: mediumLoadSize
+	4: smallLoadSize
+	5: timedDryerSheetsLoadSize
+0x2023 totalDryerSheetsNo
+0x2039
+	1: isEnable
+	2: status
+0x204D	drynessLevel
+0x2050	option
+0x2052	isExtendedTumbleValid
+0x2053	isExtendedTumble
+0x206B	selectedCycle
+0x206C	isEnable
+0x206E	isAllowable
+0x7003
+0x7A00	FanSetting
+0x7A01	OperationMode
+0x7A02
+0x7A04	Status
+0x7A0F	OnOffState
+0x7B00
+0x7B05	SleepMode
+0x7B06
+0x7B07	AutoSwingMode
+0x8004	ErrorCode
+0x8005
+0x8007	LowSaltAlert
+0x8033	ShutOffValveState
+
+Dishwasher:
+
+Erd:	Function:
+0x3001	DishwasherOperationMode
+	1: Mode
+0x3003	RinseAgentStatus
+0x3007
+0x300E	DishwasherCycleState
+	1: Cycle
+	2: Status
+0x301C
+	1: length
+	2: name
+0x301F
+0x304E
+0xD004

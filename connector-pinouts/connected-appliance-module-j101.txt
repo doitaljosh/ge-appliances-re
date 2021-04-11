@@ -1,0 +1,20 @@
+GEA Connected Appliance Transceiver (CAT) debug/programming connector
+
+Connector type: 11x1 way 2.0mm
+
+J101:
+   ___________________
+1 |□○○○○○○○○○○| 11
+    ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+1.	GND
+2.	5V
+3.	SYS_RESET
+4.	UART_RXD
+5.	UART_TXD
+6.	JTAG_TCK/SWCLK
+7.	JTAG_TDO/SWO
+8.	JTAG_RESETN
+9.	JTAG_TDI
+10.	JTAG_TMS/SWDIO
+11.	3V3
+

@@ -1,0 +1,14 @@
+EBR859463 Advantium MC
+
+Debug connector CN20:
+1. +5V
+2. TMS/SWDIO
+3. TCK/SWCLK
+4. #RESET
+5. GND
+6. NC
+7. #BOOT
+8. TXD0
+9. RXD0
+10. 3.3V
+11. GND

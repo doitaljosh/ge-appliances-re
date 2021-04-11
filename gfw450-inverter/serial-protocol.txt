@@ -1,0 +1,56 @@
+GE GFW450 inverter protocol
+
+Connector pinout:
+
+Pin#	Color	Signal
+1	RED	VCC
+2	YEL	RXD
+3	BLU	TXD
+4	ORG	GND
+5	BLK	SPD
+
+Full duplex serial
+2400 baud
+
+[STX:0xb2][ADDR:0x01][CMD][LEN][PAYLOAD][CRC16]
+
+Example:
+
+b2 01 a5 04 00 50 00 2b 1c 79
+Addr: 0x01
+Cmd: 0xa5
+Payload len: 0x04
+Payload: 0x00 0x50 0x00 0x2b
+Crc16: 0x1c79
+
+Init message:
+
+b2 01 a1 03 00 00 01 40 78
+
+Heartbeat message:
+
+b2 01 a2 00 80 b0
+
+Tumble clockwise:
+
+b2 01 a5 04 00 05 ff d5 11 57
+
+Tumble counterclockwise:
+
+b2 01 a5 04 00 05 00 2b 1c 79
+
+Spin to 400 RPM:
+
+b2 01 a5 04 00 64 01 90 95 a3
+
+Spin to 1000 RPM:
+
+b2 01 a5 04 00 64 03 e8 0c 5e
+
+Spin to 1300 RPM:
+
+b2 01 a5 04 00 64 05 14 88 6b
+
+Spin down:
+
+b2 01 a5 04 00 00 00 00 62 80

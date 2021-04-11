@@ -1,0 +1,16 @@
+{
+    "name" : "gea-sdk",
+    "description" : "General Electric Appliance SDK",
+    "homepage" : "http://www.ge.com/",
+    "keywords" : [ "GE", "GEA", "SDK", "General Electric", "appliance" ],
+    "author" : "Christopher Baker <christopher.baker2@ge.com>",
+    "repository" : {
+        "type": "git", "url": "https://github.com/GEMakers/gea-sdk.git"
+    },
+    "main" : "src/main.js",
+    "version" : "0.1.0",
+    "dependencies": {
+        "binary-stream": "git+https://github.com/GEMakers/binary-stream.git"
+    }
+}
+
