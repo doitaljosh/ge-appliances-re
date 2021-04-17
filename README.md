@@ -1,6 +1,6 @@
-Here is most of my notes and findings from my exciting trek of
-figuring out how smart GE appliances tick.
+## GE Appliances Reverse Engineering
 
-Firmware dumps are unfortunately not gonna be uploaded here 
-for legal reasons. You'll have to find a way to do 
-that yourself ;).
+This repository contains notes, scripts, and libraries I have created and/or used to reverse engineer parts from newer GE appliances.
+Most notably, I've written lots of documentation that explains how GE's serial communication bus works with various parts, such as
+induction generator boards and inverters.
+Hopefully, this repository comes in handy for anyone interested in hacking smart connected appliances to re-use parts or add features.

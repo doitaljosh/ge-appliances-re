@@ -1,0 +1,78 @@
+Setting up an agitate profile:
+
+Payload bytes:
+[0xf020] (erd)
+[0x58] (erd len)
+[u8 state change counter]
+[u8 heartbeat]
+[0xffff]
+[0x02ff]
+[0xffff]
+[u16 ccw ramp up rate] (rpm/s)
+[s16 ccw speed] (rpm)
+[u16 ccw stagnate time] (ms)
+[u16 ccw brake rate] (rpm/s)
+[u16 cw ramp up rate] (rpm/s)
+[s16 cw speed] (rpm)
+[u16 cw stagnate time] (ms)
+[u16 cw brake rate] (rpm/s)
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xffff]
+[0xf023] (erd)
+[0x01] (erd size)
+[0x02] (unknown value)
+[0xf026] (heartbeat erd)
+[0x01] (erd size)
+[0x00] (u8 heartbeat)
+[0xf213] (erd)
+[0x01] (erd size)
+[0x00] (unknown value)
+
+Initialize motor:
+e23f70c0b804f020580202fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0230102f0260100f2130101f982e3 
+
+Agitate with following parameters:
+CCW ramp-up rate: 2084 RPM/s
+CCW target speed: -722 RPM
+CCW running time: 1370 ms
+CCW braking rate: 800 RPM/s
+CW ramp-up rate: 2084 RPM/s
+CW target speed: 722 RPM
+CW running time: 1370 ms
+CW braking rate: 800 RPM/s
+e23f70c0b804f020580362ffff02ffffff0824fd2e055a0320082402d1055a0320fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0230102f0260123f2130100ba86e3 
+
+Spin with following parameters:
+Ramp-up rate: 10 RPM/s
+Target speed: -800 RPM
+e23f70c0b804f020580433ffff000afce0e0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0230102f02601faf213010093b5e3 
