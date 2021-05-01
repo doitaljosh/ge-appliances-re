@@ -52,6 +52,7 @@ No coil connected:	0x00
 Error detection methods:
 1. If coil current = 0x0200, coil is disconnected
 2. If coil temp = 0xffd8, coil thermistor is disconnected
+3. If coil temp > 0xffd8, coil thermistor is shorted
 3. If lineVoltage < 0x00c8 (200VAC), trigger UVLO condition
 4. If lineVoltage > 0x00fa (250VAC), trigger OVLO condition
 
