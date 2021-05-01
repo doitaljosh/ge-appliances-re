@@ -2,8 +2,9 @@ GE induction GEA2 protocol reverse engineering notes
 
 Addresses:
 - 0x87 - machine control
-- 0x88 - generator board 0
-- 0x89 - generator board 1
+- 0x88 - generator board 0 (Left side coils on 4-coil and 5-coil hobs)
+- 0x89 - generator board 1 (Right side coils on 4-coil hobs, center coil on 5-coil hobs)
+- 0x8a - generator board 2 (Not present on 4-coil hobs, right side coils on 5-coil hobs)
 
 Get status of the generator board (cmd = 0x9e):
 SEND:		[0xe2][board addr][len=0x0a][src][0x9e][0x00][crc16][0xe3][0xe1]
@@ -18,93 +19,119 @@ RECEIVE:	[0xe2]
 		[u16 0x0000]
 		[u16 0x0000]
 		[u16 powerStage0Temp]
-		[u16 burner0Temp]
+		[u16 coil0Temp]
 		[u16 powerStage1Temp]
-		[u16 burner1Temp]
+		[u16 coil1Temp]
 		[u16 lineVoltage]
 		[crc16]
 		[0xe3]
 		[0xe1] 
 
-Common routine for communication:
-
-1a. Send the enable message 5 times to wake up the generator
-	[0xe2][board-addr][len=0x0a][src][0x26][board-id-msb][board-id-lsb][crc16][0xe3][0xe1]
-1b. Board will reply with an acknowledge
-	[0xe2][src][len=0x08][board-addr][0x26][crc16][0xe3][0xe1]
-	
-2a. Initialize the heartbeat to 1 and set all burner power levels to zero.
-	[0xe2][board-addr][len=0x0b][src][0x28][u8 burner0Power = 0x0][u8 burner1Power = 0x0][u8 heartbeat = 0x1][crc16][0xe3][0xe1]
-2b. Board will reply with the same heartbeat value and the current for each burner (both currents should be zero, heartbeat should be the same as what was sent).
-	[0xe2][src][len=0x0d][board-addr][0x29][u16 burner0Current][u16 burner1Current][u8 heartbeat][crc16][0xe3][0xe1]
-
-3. Send 2a with specified power levels, then receive/process 2b every 1000ms, incrementing the heartbeat value in 2a every iteration.
-
 Command codes:
 
 Code:	Description:				Context:		Frequency:
-0x26	Set up a board				MC->Generator		Once
+0x01	Query software version			Universal		Once
+0x26	Configure board				MC->Generator		Once
 0x28	Set power levels and sync heartbeat	MC->Generator		Every 1000ms
-0x29	Read burner current values		Generator->MC		Every 1000ms
+0x29	Read coil current values		Generator->MC		Every 1000ms
 0x9e	Read generator board status		Cmd/cmd response	Every 5s
 
-Important notes:
+Power levels (contained in command 0x28's payload):
 
-1. There are 20 available power levels: 0x00-0x13 (0-19).
-2. Board ids 
-	Board 0 id: 0x0202
-	Board 1 id: 0x0401
+- There are 20 available power levels: 0x00-0x13 (0-19).
+
+Coil profiles (This tells the generator boards what size coils are connected, contained in command 0x26's payload):
+
+Coil size:		Profile ID:
+No coil connected:	0x00
+1800 watt coil:		0x01
+2500 watt coil:		0x02
+3200 watt coil:		0x03
+3700 watt coil:		0x04
+
+Error detection methods:
+1. If coil current = 0x0200, coil is disconnected
+2. If coil temp = 0xffd8, coil thermistor is disconnected
+3. If lineVoltage < 0x00c8 (200VAC), trigger UVLO condition
+4. If lineVoltage > 0x00fa (250VAC), trigger OVLO condition
+
+Common routine for communication:
+
+Do once:
+	0a. Query software version from expected board addresses to probe them.
+		[0xe2][board-addr][len=0x08][src][0x01][crc16][0xe3]
+	0b. Board(s) respond(s) with software version:
+		[0xe2][src][len=0x0c][board-addr][0x01][crit major][crit minor][noncrit major][noncrit minor][crc16][0xe3][0xe1]
+	1a. Send the setup message to configure the generator board(s):
+		[0xe2][board-addr][len=0x0a][src][0x26][coil0 profile][coil1 profile][crc16][0xe3][0xe1]
+	1b. Board(s) will reply with an acknowledge
+		[0xe2][src][len=0x08][board-addr][0x26][crc16][0xe3][0xe1]
+	2a. Initialize the heartbeat to 1 and set all coil power levels to zero.
+		[0xe2][board-addr][len=0x0b][src][0x28][u8 coil0Power = 0x0][u8 coil1Power = 0x0][u8 heartbeat = 0x1][crc16][0xe3][0xe1]
+	2b. Board(s) will reply with the same heartbeat value and the current for each coil (both currents should be zero, heartbeat should be the same as what was sent).
+		[0xe2][src][len=0x0d][board-addr][0x29][u16 coil0Current][u16 coil1Current][u8 heartbeat][crc16][0xe3][0xe1]
+	
+Do every second:
+	0. Send 2a with specified power levels.
+	1. Receive/process 2b, using PID/safety algorithms if necessary.
+	2. Increment the heartbeat value in 2a.
+	
+Do every 5 seconds:
+	0a. Query the status of each generator board
+		[0xe2][board-addr][0x1c][src][0x9e][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][0x00][crc16][0xe3]
+	0b. Process the status from each generator board
+		[0xe2][src][0x1c][board-addr][0x9e][0x0000][0xc350][0xc350][0x0000][0x0000][powerState0Temp][coil0Temp][powerState1Temp][coil1Temp][lineVoltage][crc16][0xe3][0xe1]
 
 Example routines captured from a range:
 
 Front left full power:
 
-e2 88 0a 87 26 02 02 d9 fe e3 e1		Enable board 0
+e2 88 0a 87 26 02 02 d9 fe e3 e1		Enable board 0 with two 2500w coils
 e2 87 08 88 26 59 70 e3 e1 			Board 0 ack
-e2 87 0d 88 29 00 00 00 00 6c df ac e3 e1  	Status from board 0: burner0 current: 0x0 burner1 current = 0x0
-e2 88 0b 87 28 00 13 6c b0 a6 e3 e1		Set power burner0 = 0x0, burner1 = 0x13 on board 0, heartbeat = 0x6c
-e2 87 0d 89 29 00 00 00 00 61 b6 60 e3 e1 	Status from board 1: burner0 current: 0x0 burner1 current = 0x0
-e2 89 0b 87 28 00 00 60 9f 6b e3 e1		Set power burner0 = 0x0, burner1 = 0x0 on board 1, heartbeat = 0x60
-e2 87 0d 88 29 00 00 98 04 6d d2 d1 e3 e1 	Status from board 0: burner0 current: 0x0 burner1 current = 0x9804
-e2 88 0b 87 28 00 13 6d a0 87 e3 e1		Set power burner0 = 0x0, burner1 = 0x13 on board 0, heartbeat = 0x6d
-e2 87 0d 89 29 00 00 00 00 61 b6 60 e3 e1	Status from board 1: burner0 current: 0x0 burner1 current = 0x0
-e2 89 0b 87 28 00 00 61 8f 4a e3 e1		Set power burner0 = 0x0, burner1 = 0x0 on board 1, heartbeat = 0x61
+e2 87 0d 88 29 00 00 00 00 6c df ac e3 e1  	Status from board 0: coil0 current: 0x0 coil1 current = 0x0
+e2 88 0b 87 28 00 13 6c b0 a6 e3 e1		Set power coil0 = 0x0, coil1 = 0x13 on board 0, heartbeat = 0x6c
+e2 87 0d 89 29 00 00 00 00 61 b6 60 e3 e1 	Status from board 1: coil0 current: 0x0 coil1 current = 0x0
+e2 89 0b 87 28 00 00 60 9f 6b e3 e1		Set power coil0 = 0x0, coil1 = 0x0 on board 1, heartbeat = 0x60
+e2 87 0d 88 29 00 00 98 04 6d d2 d1 e3 e1 	Status from board 0: coil0 current: 0x0 coil1 current = 0x9804
+e2 88 0b 87 28 00 13 6d a0 87 e3 e1		Set power coil0 = 0x0, coil1 = 0x13 on board 0, heartbeat = 0x6d
+e2 87 0d 89 29 00 00 00 00 61 b6 60 e3 e1	Status from board 1: coil0 current: 0x0 coil1 current = 0x0
+e2 89 0b 87 28 00 00 61 8f 4a e3 e1		Set power coil0 = 0x0, coil1 = 0x0 on board 1, heartbeat = 0x61
 
 Rear left full power:
 
-e2 88 0a 87 26 02 02 d9 fe e3 e1		Enable board 0
+e2 88 0a 87 26 02 02 d9 fe e3 e1		Enable board 0 with two 2500w coils
 e2 87 08 88 26 59 70 e3 e1			Board 0 ack
-e2 87 0d 88 29 00 00 00 00 94 b1 bb e3 e1	Status from board 0: burner0 current: 0x0 burner1 current = 0x0
-e2 88 0b 87 28 13 00 94 92 a2 e3 e1		Set power burner0 = 0x13, burner1 = 0x0 on board 0, heartbeat = 0x94
-e2 87 0d 89 29 00 00 00 00 83 6b 0c e3 e1	Status from board 1: burner0 current: 0x0 burner1 current = 0x0
-e2 89 0b 87 28 00 00 83 52 26 e3 e1		Set power burner0 = 0x0, burner1 = 0x0 on board 0, heartbeat = 0x83
-e2 87 0d 88 29 98 04 00 00 95 4f cc e3 e1 	Status from board 0: burner0 current: 0x9804 burner1 current = 0x0
-e2 88 0b 87 28 13 00 95 82 83 e3 e1 		Set power burner0 = 0x13, burner1 = 0x0 on board 0, heartbeat = 0x95
-e2 87 0d 89 29 00 00 00 00 84 1b eb e3 e1 	Status from board 1: burner0 current: 0x0 burner1 current = 0x0
-e2 89 0b 87 28 00 00 84 22 c1 e3 e1		Set power burner0 = 0x0, burner1 = 0x0 on board 0, heartbeat = 0x84
+e2 87 0d 88 29 00 00 00 00 94 b1 bb e3 e1	Status from board 0: coil0 current: 0x0 coil1 current = 0x0
+e2 88 0b 87 28 13 00 94 92 a2 e3 e1		Set power coil0 = 0x13, coil1 = 0x0 on board 0, heartbeat = 0x94
+e2 87 0d 89 29 00 00 00 00 83 6b 0c e3 e1	Status from board 1: coil0 current: 0x0 coil1 current = 0x0
+e2 89 0b 87 28 00 00 83 52 26 e3 e1		Set power coil0 = 0x0, coil1 = 0x0 on board 0, heartbeat = 0x83
+e2 87 0d 88 29 98 04 00 00 95 4f cc e3 e1 	Status from board 0: coil0 current: 0x9804 coil1 current = 0x0
+e2 88 0b 87 28 13 00 95 82 83 e3 e1 		Set power coil0 = 0x13, coil1 = 0x0 on board 0, heartbeat = 0x95
+e2 87 0d 89 29 00 00 00 00 84 1b eb e3 e1 	Status from board 1: coil0 current: 0x0 coil1 current = 0x0
+e2 89 0b 87 28 00 00 84 22 c1 e3 e1		Set power coil0 = 0x0, coil1 = 0x0 on board 0, heartbeat = 0x84
 
 Front right full power:
 
-e2 89 0a 87 26 04 01 06 9b e3 e1		Enable board 1
+e2 89 0a 87 26 04 01 06 9b e3 e1		Enable board 1 with 3700w and 1800w coils
 e2 87 08 89 26 6a 41 e3 e1			Board 1 ack
-e2 87 0d 88 29 00 00 00 00 bb 64 36 e3 e1	Status from board 0: burner0 current: 0x0, burner1 current = 0x0
-e2 88 0b 87 28 00 00 bb 5d 1c e3 e1		Set power burner0 = 0x0, burner1 = 0x0 on board 0, heartbeat = 0xba
-e2 87 0d 89 29 00 00 00 00 a4 3f 89 e3 e1  	Status from board 1: burner0 current: 0x0 burner1 current = 0x0
-e2 89 0b 87 28 13 00 a4 1c 90 e3 e1 		Set power burner0 = 0x13, burner1 = 0x0 on board 1, heartbeat = 0xa5
-e2 87 0d 88 29 00 00 00 00 bb 64 36 e3 e1 	Status from board 0: burner0 current: 0x0, burner1 current = 0x0
-e2 88 0b 87 28 00 00 bb 5d 1c e3 e1 		Set power burner0 = 0x0, burner1 = 0x0 on board 0, heartbeat = 0xbb
-e2 87 0d 89 29 98 04 00 00 a6 f1 9d e3 e1 	Status from board 1: burner0 current: 0x9804 burner1 current = 0x0
-e2 89 0b 87 28 13 00 a6 3c d2 e3 e1 		Set power burner0 = 0x13, burner1 = 0x0 on board 1, heartbeat = 0xa6
+e2 87 0d 88 29 00 00 00 00 bb 64 36 e3 e1	Status from board 0: coil0 current: 0x0, coil1 current = 0x0
+e2 88 0b 87 28 00 00 bb 5d 1c e3 e1		Set power coil0 = 0x0, coil1 = 0x0 on board 0, heartbeat = 0xba
+e2 87 0d 89 29 00 00 00 00 a4 3f 89 e3 e1  	Status from board 1: coil0 current: 0x0 coil1 current = 0x0
+e2 89 0b 87 28 13 00 a4 1c 90 e3 e1 		Set power coil0 = 0x13, coil1 = 0x0 on board 1, heartbeat = 0xa5
+e2 87 0d 88 29 00 00 00 00 bb 64 36 e3 e1 	Status from board 0: coil0 current: 0x0, coil1 current = 0x0
+e2 88 0b 87 28 00 00 bb 5d 1c e3 e1 		Set power coil0 = 0x0, coil1 = 0x0 on board 0, heartbeat = 0xbb
+e2 87 0d 89 29 98 04 00 00 a6 f1 9d e3 e1 	Status from board 1: coil0 current: 0x9804 coil1 current = 0x0
+e2 89 0b 87 28 13 00 a6 3c d2 e3 e1 		Set power coil0 = 0x13, coil1 = 0x0 on board 1, heartbeat = 0xa6
 
 Rear right full power:
 
-e2 89 0a 87 26 04 01 06 9b e3 e1		Enable board 1
+e2 89 0a 87 26 04 01 06 9b e3 e1		Enable board 1 with 3700w and 1800w coils
 e2 87 08 89 26 6a 41 e3 e1			Board 1 ack
-e2 87 0d 88 29 00 00 00 00 de 58 35 e3 e1 	Status from board 0: burner0 current: 0x0, burner1 current = 0x0
-e2 88 0b 87 28 00 00 de 61 1f e3 e1 		Set power burner0 = 0x0, burner1 = 0x0 on board 0, heartbeat = 0xde
-e2 87 0d 89 29 00 00 00 00 c7 63 4c e3 e1 	Status from board 1: burner0 current: 0x0 burner1 current = 0x0
-e2 89 0b 87 28 00 13 c7 0c 46 e3 e1 		Set power burner0 = 0x0, burner1 = 0x13 on board 1, heartbeat = 0xc7
-e2 87 0d 88 29 00 00 00 00 df 48 14 e3 e1 	Status from board 0: burner0 current: 0x0, burner1 current = 0x0
-e2 88 0b 87 28 00 00 df 71 3e e3 e1 		Set power burner0 = 0x0, burner1 = 0x0 on board 0, heartbeat = 0xdf
-e2 87 0d 89 29 00 00 98 04 c8 8f ff e3 e1 	Status from board 1: burner0 current: 0x0 burner1 current = 0x9804
-e2 89 0b 87 28 00 13 c8 fd a9 e3 e1 		Set power burner0 = 0x0, burner1 = 0x13 on board 1, heartbeat = 0xc8
+e2 87 0d 88 29 00 00 00 00 de 58 35 e3 e1 	Status from board 0: coil0 current: 0x0, coil1 current = 0x0
+e2 88 0b 87 28 00 00 de 61 1f e3 e1 		Set power coil0 = 0x0, coil1 = 0x0 on board 0, heartbeat = 0xde
+e2 87 0d 89 29 00 00 00 00 c7 63 4c e3 e1 	Status from board 1: coil0 current: 0x0 coil1 current = 0x0
+e2 89 0b 87 28 00 13 c7 0c 46 e3 e1 		Set power coil0 = 0x0, coil1 = 0x13 on board 1, heartbeat = 0xc7
+e2 87 0d 88 29 00 00 00 00 df 48 14 e3 e1 	Status from board 0: coil0 current: 0x0, coil1 current = 0x0
+e2 88 0b 87 28 00 00 df 71 3e e3 e1 		Set power coil0 = 0x0, coil1 = 0x0 on board 0, heartbeat = 0xdf
+e2 87 0d 89 29 00 00 98 04 c8 8f ff e3 e1 	Status from board 1: coil0 current: 0x0 coil1 current = 0x9804
+e2 89 0b 87 28 00 13 c8 fd a9 e3 e1 		Set power coil0 = 0x0, coil1 = 0x13 on board 1, heartbeat = 0xc8
