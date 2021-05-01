@@ -63,6 +63,7 @@ Do once:
 		[0xe2][board-addr][len=0x08][src][0x01][crc16][0xe3]
 	0b. Board(s) respond(s) with software version:
 		[0xe2][src][len=0x0c][board-addr][0x01][crit major][crit minor][noncrit major][noncrit minor][crc16][0xe3][0xe1]
+		Example: 0x01 0x02 0x05 0x33 = SW ver: 1.2.5.33
 	1a. Send the setup message to configure the generator board(s):
 		[0xe2][board-addr][len=0x0a][src][0x26][coil0 profile][coil1 profile][crc16][0xe3][0xe1]
 	1b. Board(s) will reply with an acknowledge
