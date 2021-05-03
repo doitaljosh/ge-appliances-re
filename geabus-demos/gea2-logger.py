@@ -6,7 +6,7 @@ import binascii
 
 # Serial port constants.
 ttydev = "/dev/ttyUSB0"
-baud = 230400
+baud = 19200
 port = serial.Serial(ttydev, baud)
 
 # Gea message flag bytes.
