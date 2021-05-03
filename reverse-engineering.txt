@@ -4,16 +4,26 @@ Electrical characteristics:
 
 Logic level:		5V
 Baud rate:		19200 (GEA2) or 230400 (GEA3)
-Duplex:		Half for 19200 (GEA2), full for 230400 (GEA3)
-Logic orientation:	Inverted (GEA2) or non-inverted (GEA3)
+Duplex:			Half/full for 19200 (GEA2), full for 230400 (GEA3)
 
 ERD: Entity Reference Designator
 Endpoint: A board or device on the bus
-Entity: An attribute of an Erd that should be read or written.
+Entity: An attribute hosted by an endpoint that can be read, written, or subscribed to.
 
-Basic packet structure:
-|----------------------Header------------------------||-Data-||--Checksum--||--Footer---|
-[start byte][destination][length][source][erd command][data..][crc16][crc16][end byte(s)]
+Flag bytes:
+0xe0	Escape
+0xe1	Ack
+0xe2	STX
+0xe3	ETX
+
+CRC16 seed: 0x1021
+
+GEA1 packet structure (no erds):
+[0xe2][destination][length][source][cmd][data][crc16 msb][crc16 lsb][0xe3]
+
+GEA2 packet structure:
+|-------------Header--------------||----------------------------------------Payload---------------------------------------||-----Checksum-------||ETX-|
+[0xe2][destination][length][source][erd command][erd count][erd0][erd0 data len][erd0 data][erdn][erdn data len][erdn data][crc16 msb][crc16 lsb][0xe3]
 
 Erd commands:
 0xF0	Read Erd(s)
@@ -24,9 +34,9 @@ Erd commands:
 0xF5	Publish notification of changed Erd(s)
 
 Querying/modifying Erds:
-[stx][destination][length][source][Erd_cmd][MSB_Erd][LSB_Erd][data..][msb_crc16][lsb_crc16][etx]
+[stx][destination][length][source][Erd_cmd][num erds][MSB_Erd][LSB_Erd][data len][data][msb_crc16][lsb_crc16][etx]
 
-GEA messages with Erd multiple messages (EMMs):
+GEA messages with multiple messages:
 [stx][destination][length][source][Erd_cmd][Num_Erds][MSB_Erd1][LSB_Erd1][Erd1_Data_len][Erd1_Data][MSB_Erdn][LSB_Erdn][Erdn_Data_len][Erdn_Data]...[MSB_crc16][LSB_crc16][etx]
 
 Board addresses for some different appliances:
@@ -40,16 +50,25 @@ Addressing on bottom-freezer refrigerators:
 0x03	Door board
 0x04	Feature board
 0xBF	WiFi module
-0xCB	Reserved for Green/Gray/Blue Bean devices
 0xFF	Broadcast (same for all appliances)
 
 ==============================RANGES:=============================================
 
 Addressing on ranges:
-0x80	Main board (TO-20, RC-15, RC-17)
-0xbf	WiFi module
-0x87	Induction generator board 1
-0x88	Induction generator board 2
+0x80	Machine control or LCD board
+0x81	2-key self-clean UI
+0x82	Left-wing touch
+0x84	Right-wing touch
+0x85	Machine control on LCD touch models
+0x87	Cooktop machine control
+0x88	Induction generator board 1
+0x89	Induction generator board 2
+0x8a	Induction generator board 3
+0x92	Left gen board
+0x94	Right gen board
+0xbc	BLE module
+0xbe	Connect plus WiFi module
+0xbf	Internal WiFi module
 
 ==============================DRYERS:=============================================
 
