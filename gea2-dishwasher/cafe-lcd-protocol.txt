@@ -1,7 +1,7 @@
 Cafe dishwasher LCD gea erds
 
 LCD address: 0x42
-Captouch address: 0xc0
+Machine control address: 0xc0
 
 Send this message to the LCD:
 
