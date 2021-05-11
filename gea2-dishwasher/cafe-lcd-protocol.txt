@@ -6,15 +6,16 @@ Machine control address: 0xc0
 Send this message to the LCD:
 
 [0xe2]
-[0x42]
-[0x23]
+[0x42] to LCD
+[0x23] 35 byte long message
 [src]
-[0xb8]
+[0xb8] erd cmd
 [0x06] six erds
 [0xf101] heartbeat erd
 [0x01] heartbeat erd len
-[0x00] heartbeat value
-[f102] display mode erd
+[u8 n] 
+	where n = heartbeat value
+[0xf102] display mode erd
 [0x01] display mode erd len
 [u8 n]
 	where n = :
@@ -55,11 +56,33 @@ Send this message to the LCD:
 [crc16]
 [0xe3]
 
-Example message:
+Received from LCD:
+
+[0xe2]
+[src]
+[0x0d] 13 byte long message
+[0x42] from LCD
+[0xa2] erd cmd
+[0x00] ?
+[0xf101] heartbeat erd
+[0x01] heartbeat erd len
+[u8 n]
+	where n = heartbeat value
+[crc16]
+[0xe3]
+
+Example write request sent to LCD:
 
 - Heartbeat = 0
 - Display mode = 1 (washing)
 - Cycle time remaining = 60 minutes
 - Door close countdown seconds remaining = 4 seconds
 
-e2 42 12 c0 b8 06 f1 01 01 00 f1 02 01 01 f1 03 01 01 f1 04 02 00 00 f1 05 01 00 3c f1 06 01 04 a7 25 e3
+e2 42 23 c0 b8 06 f1 01 01 00 f1 02 01 01 f1 03 01 01 f1 04 02 00 00 f1 05 01 00 3c f1 06 01 04 a7 25 e3
+
+Example write response received from LCD:
+
+- heartbeat = 0
+                              |-----Note the escape byte before 0xe3! When writing a GEA stack, this will become clear.
+                              V
+e2 c0 0d 42 a2 00 f1 01 01 00 e0 e3 d5 e3
