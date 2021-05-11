@@ -39,7 +39,25 @@ Querying/modifying Erds:
 GEA messages with multiple messages:
 [stx][destination][length][source][Erd_cmd][Num_Erds][MSB_Erd1][LSB_Erd1][Erd1_Data_len][Erd1_Data][MSB_Erdn][LSB_Erdn][Erdn_Data_len][Erdn_Data]...[MSB_crc16][LSB_crc16][etx]
 
+Important notes about addresses:
+
+In most configurations, there are two different GEA busses: external and internal. The external GEA bus
+contains the connected WiFi module, and is routed to the RJ45 service port. The internal GEA bus is 
+for internal components of the appliance to communicate, and is not accessible from the RJ45 port. You can
+still talk to all boards in a system from the external bus, however, the external bus does not expose private
+communication between boards which would make it possible to reverse engineer without opening the appliance. 
+From a security standpoint, this is good practice, say the WiFi module was compromised. 
+
 Board addresses for some different appliances:
+
+=============================CONSTANTS:===========================================
+
+Addressing common among all appliances:
+0xbf	Universal WiFi module
+0xcb	Green bean
+0xe4	Newfi service tool
+0xf0	Broadcast to external domain
+0xff	Broadcast to all domains
 
 ==============================REFRIGERATORS:======================================
 
@@ -49,8 +67,6 @@ Addressing on bottom-freezer refrigerators:
 0x02	Dispenser board
 0x03	Door board
 0x04	Feature board
-0xBF	WiFi module
-0xFF	Broadcast (same for all appliances)
 
 ==============================RANGES:=============================================
 
@@ -68,27 +84,24 @@ Addressing on ranges:
 0x94	Right gen board
 0xbc	BLE module
 0xbe	Connect plus WiFi module
-0xbf	Internal WiFi module
 
 ==============================DRYERS:=============================================
 
 Addressing on 2019 dryers:
 0xc0	Main board
-0x25	User interface (captouch)
-0xbf	WiFi module
+0x25	User interface
 
 ==============================WASHERS:============================================
 
 Addressing on 2019 washers:
 0xc0	Main board
-0x25	User interface (captouch)
-0x3f	Inverter board (290d2861)
-0xbf	WiFi module
+0x25	User interface
+0x3f	Inverter board
 
 ==============================DISHWASHERS:========================================
 
 Addressing on dishwashers:
-0x46	Main board (DishMC)
-0x5f	User interface
-0x45	Inverter board
-0xbf	WiFi module
+0xc0	Main board
+0x42	LCD status display
+0x46	User interface
+0x5f	Inverter board

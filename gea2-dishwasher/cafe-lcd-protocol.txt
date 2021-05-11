@@ -1,0 +1,65 @@
+Cafe dishwasher LCD gea erds
+
+LCD address: 0x42
+Captouch address: 0xc0
+
+Send this message to the LCD:
+
+[0xe2]
+[0x42]
+[0x23]
+[src]
+[0xb8]
+[0x06] six erds
+[0xf101] heartbeat erd
+[0x01] heartbeat erd len
+[0x00] heartbeat value
+[f102] display mode erd
+[0x01] display mode erd len
+[u8 n]
+	where n = :
+		0x00 - display off
+		0x01 - washing
+		0x02 - display solid black
+		0x03 - drying
+		0x04 - cycle paused
+		0x05 - display solid black
+		0x06 - clean
+		0x07 - show cafe logo
+		0x08 - leak detected warning
+		0x09 - door wakeup: sabbath mode on
+		0x0a - door wakeup: sabbath mode off
+		0x0b - demo mode on
+		0x0c - demo mode off
+		0x0d - close door in n seconds to resume cycle
+		0x0e - close door in n seconds to resume cycle
+		0x0f - remote enabled
+		0x10 - sound on, press dry 7 times
+		0x11 - sound off, press dry 7 times
+		0x12 - cycle starts in n minute(s)
+		0x13 - display solid red
+[0xf103] unknown erd
+[0x01] erd len
+[0x01] unknown payload
+[0xf104] unknown erd
+[0x02] erd len
+[0x0000] unknown payload
+[0xf105] cycle minutes remaining erd
+[0x02] erd len
+[u16 n]
+	where n = minutes remaining
+[0xf106] close door countdown seconds remaining erd
+[0x01] erd len
+[u8 n]
+	where n = seconds remaining (0-4)
+[crc16]
+[0xe3]
+
+Example message:
+
+- Heartbeat = 0
+- Display mode = 1 (washing)
+- Cycle time remaining = 60 minutes
+- Door close countdown seconds remaining = 4 seconds
+
+e2 42 12 c0 b8 06 f1 01 01 00 f1 02 01 01 f1 03 01 01 f1 04 02 00 00 f1 05 01 00 3c f1 06 01 04 a7 25 e3
