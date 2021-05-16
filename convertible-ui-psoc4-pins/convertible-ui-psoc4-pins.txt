@@ -12,13 +12,13 @@ GEA TXD - P1.1 - scb[0].uart_tx
 
 Capsense pads pin mapping:
 
-SW2 - P0.6
-SW3 - P0.5
-SW4 - P0.4
-SW5 - P0.3
-SW6 - P0.2
-SW7 - P0.1
-SW8 - P0.0
+SW2 - P0.6 (Not labeled)
+SW3 - P0.5 (Not labeled)
+SW4 - P0.4 (Meat)
+SW5 - P0.3 (Beverages)
+SW6 - P0.2 (Snacks)
+SW7 - P0.1 (Wine)
+SW8 - P0.0 (Ctrl lock)
 
 Heartbeat LED pin mapping:
 
