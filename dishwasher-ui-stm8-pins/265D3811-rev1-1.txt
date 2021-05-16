@@ -12,7 +12,7 @@ Buzzer:
 A101 - PD4
 
 Switching mosfet:
-PE5 - Q107
+Q107 - PE5
 
 Seven segment display pinout:
 
@@ -21,7 +21,7 @@ Dig2	SegG	SegF	SegA	SegB
 1	2	3	4	5
 SegD	Dig1	SegE	SegC	Dig3
 
-LED matrix:
+LED and key matrix:
 
 	PA1	PA2	PA3	PB0	PB1	PB2	PB4	PB5	PB6	PB7									
 PC2	D1SD	D1SE	D1SF	D1SA	D1SB	D1SC	S202	S201	D1SG	X
