@@ -1,0 +1,39 @@
+265D3747G100 board
+
+STM8S003K3T6C
+
+Pin layout:
+
+Physical pin:	Logical pin:	Function:
+1		Reset		NRST
+2		OSCIN/PA1	
+3		OSCOUT/PA2	
+4		Power		VSS
+5		Power		VCAP
+6		Power		VDD
+7		PA3		
+8		PF4		
+9		PB7		LED_Z111
+10		PB6		LED_Z101
+11		PB5		Switch_S104
+12		PB4		Switch_S103
+13		PB3		
+14		PB2		LED_Z104
+15		PB1		LED_Z110
+16		PB0		LED_Z108
+17		PE5		
+18		PC1		
+19		PC2		
+20		PC3		Switch_S101
+21		PC4		Switch_S102
+22		PC5		
+23		PC6		LED_Z106
+24		PC7		LED_Z102
+25		PD0		LED_Z114
+26		PD1		SWIM/LED_Z112
+27		PD2		LED_Z105
+28		PD3		LED_Z109
+29		PD4		
+30		PD5		UART1_TX
+31		PD6		UART1_RX
+32		PD7		

@@ -1,0 +1,106 @@
+2019 Laundry CapTouch User Interface Reverse Engineering Notes:
+
+Geabus info:
+Generation: 3
+Duplex: full
+Baud rate: 230400
+UI board address: 0x25
+Endianness: Big
+
+MC to UI Erds:
+
+Erd:	Description:		Len:	Data:
+0x0030	Unknown		0x01	{0x00}
+0xff73	Unknown		0x01	{0x00}
+0xff52	Unknown		0x01	{0x02}
+0xff02	LED bytes		0x13	{[byte0][byte1][byte2][byte3][byte4][byte5][byte6][byte7][byte8][byte9][byte10][byte11][byte12][byte13][byte14][byte15][byte16][byte17][byte18]}
+0xff60	Adsr tuneplayer	0x04	{[0x04][tuneIdMsb][tuneIdLsb][volume]}
+
+Main display segment bit mapping:
+
+19 bytes in the Erd data field are represented as '0' to '18' respectively.
+Eight bits per byte are represented as 'a' to 'h' respectively.
+Each LED segment has a letter and number assigned to it corresponding to the bit and byte that controls it.
+
+For instance, to display "C" on the first digit, the program should write '0b00111001' (0x39) to byte 2.
+To display 'Foo' on all three digits, write the following data to the following bytes in MSB-first order:
+- '0b01110001' = (0x71) -> byte2 (h2g2f2e2d2c2b2a2) (dig2segA, dig1segG, dig1segF, dig1segE, dig1segD, dig1segC, dig1segB, dig1segA)
+- '0b00101110' = (0x2E) -> byte3 (h3g3f3e3d3c3b3a3) (dig3segB, dig3segA, dig2segG, dig2segF, dig2segE, dig2segD, dig2segC, dig2segB)
+- '0b00010111' = (0x17) -> byte4 (h4g4f4e4d4c4b4a4) (extrahot3, hot1, hot2, dig3segG, dig3segF, dig3segE, dig3segD, dig3segC)
+All other bytes must be set to 0x00
+
+A full Gea2 message that displays 'Foo' and plays the power on tune:
+e2 25 26 c0 f1 02 ff 02 13 00 00 71 2e 17 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff 60 04 00 01 10 70 65 dc e3
+[Stx][UI addr][len][local addr][write Erd cmd][num Erds][LED Erd Msb][LED Erd Lsb][LED Erd data len][LED bytes:19][TunePlayer Erd Msb][TunePlayer Erd Lsb][TunePlayer Erd data len][TunePlayer Erd Data:4][Crc Msb][Crc Lsb][Etx]
+
+####################################################################################################################################
+#	|d9| Auto|d10|e10| |f8|g8|Tank   a2a2a2a2		 h2h2h2h2	 g3g3g3g3	|e13|f13|g13| 			|a15|	#
+# Opt1	|d9| More|f10|g10| |h8|a9|Low	 f2       b2		e3       a3	d4       h3	|h13|a14|b14| |c14|	  Opt5	|a15|	#
+#	|e9| Less|h10|a11| |b8|c8|Loads f2       b2	b9	e3       a3	d4       h3	|d14|e14|f14| |g14|h14|	|b15|	#
+#	|e9|		   |d8|e8|Left	 f2 Dig 1 b2	b9	e3 Dig 2 a3	d4 Dig 3 h3					|b15|	#
+#					 f2       b2		e3       a3	d4       h3					     	#
+#	|f9|				   g2g2g2g2		 f3f3f3f3	 e4e4e4e4					|c15|	#
+# Opt2	|f9|	|d11| Remote		 e2       c2		d3       b3	c4       a4			 	  Opt6	|c15|	#
+#	|g9|	|d11| Enabled 		 e2       c2	c9	d3       b3	c4       a4					|d15|	#
+#	|g9|				 e2       c2	c9	d3       b3	c4       a4					|d15|	#
+#					 e2       c2		d3       b3	c4       a4					     	#
+#	|h9 |				  d2d2d2d2		 c3c3c3c3	 b4b4b4b4					|e15|	#
+# Opt3	|h9 |			 	Fill		Wash		Rinse		Spin				  Opt7	|e15|	#
+#	|a10|			 	|a12|b12|c12|	|d12|e12|f12|	|g12|h12|a13|	|b13|c13|d13|				|f15|	#
+#	|a10|				Extra Heavy	Extra Hot	Max							|f15|	#
+#					|a16|b16|c16|	|h17|a18|f4|	|c6|d6|e6|						     	#
+# 	|b10|				Heavy		Hot		High							|g15|	#							
+# Opt4	|b10|				|d16|e16|f16|	|g4|h4|a5|	|f6|g6|h6|					  Opt8	|g15|	#
+#	|c10|				Normal		Warm		Medium							|h15|	#
+#	|c10|				|g16|h16|a17|	|b5|c5|d5|	|a7|b7|c7|						|h15|	#
+#					Light		Cold		Low							     	#
+#					|b17|c17|d17|	|e5|f5|g5|	|d7|e7|f7|						     	#
+#					Extra Light	Tap Cold	No Spin						     	#
+#					|e17|f17|g17|	|h5|a6|b6|	|g7|h7|a8|						     	#
+####################################################################################################################################
+
+Encoder selector LEDs and power/start button backlights:
+
+|||	    |c0|	|b0|
+      	||                   |a0|
+||| ||			           ||
+			           ||
+    ||			      ||
+        ||  ||		||    
+        
+Adsr TunePlayer Erd data:
+Erd: 0xff60
+Data length: 0x04
+Data: [0x04][tuneIdMsb][tuneIdLsb][volume]
+
+Player mode:
+data[0]=0x04: Select built-in tune
+
+Tune ID:
+data[1:2]: Acceptable values:
+0x0110 - Power on (a--e-c-e-h--)
+0x0210 - Power off (h--e-c-e-a--)
+0x0310 - UI feedback toggle on (a-c-e--)
+0x0410 - UI feedback toggle off (e-c-a--)
+0x0502 - UI feedback more time (e-f)
+0x0610 - UI feedback less time (f-e)
+0x0710 - Sound volume level 1 (e-h)
+0x0810 - UI feedback error (a-minor) 
+0x0910 - UI feedback cycle selector incremented (e)
+0x0a10 - Cycle started (a--c--e-d-c-b-a--)
+0x0b10 - Cycle completed (a--c--e-d-c-b-a-e-h--)
+0x0c10 - Cycle alert (a-em-c-d-c)
+0x0d10 - Reminder (e-d-c-b-c-e--)
+0x0e10 - Cycle paused (a--e-h)
+0x0f10 - Sound volume level 2 (e-h)
+0x1010 - UI feedback toggle on 2 (a-c-e--)
+0x1110 - UI feedback toggle off 2 (e-c-a--)
+0x1210 - UI feedback unknown on (a-c--h--)
+0x1310 - UI feedback unknown off (h-c--a--)
+0x1410 - UI feedback unknown on (a-c--h--)
+0x1510 - UI feedback toggle off 3 (e-c-a--)
+0x1610 - Cycle completed reminder (a--c--e-d-c-b-a-e-h-------)
+0x1810 - Long beep
+
+Volume:
+data[3]: Acceptable values: (0x00-0xff) 0x00 being mute

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+CRCVAL=$(./pycrc.py \
+--width 16 \
+--poly 0x1021 \
+--reflect-in false \
+--xor-in 0xe300 \
+--reflect-out false \
+--xor-out 0x0000 \
+--check-hexstring $(echo "$1" | sed 's/ //g'))
+
+OUT=$1${CRCVAL:2}"e3"
+OUT=${OUT^^}
+echo $OUT | sed 's/.\{2\}/& /g'
+echo $CRCVAL

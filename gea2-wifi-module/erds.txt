@@ -1,0 +1,42 @@
+Erd:	Length:		Description:
+0x0100	4		CAT current firmware version
+0x0101	4		CAT available firmware version
+0x0102	1		CAT firmware status
+	0x00 = idle
+	0x01 = writing
+	0x02 = image error
+	0x03 = writing error
+	0x04 = downloading
+	0x05 = appliance busy
+0x6000	6		WiFi MAC address
+0x6001	32		WiFi network name
+0x6002	32		WiFi password
+0x6003	1		WiFi network state
+	0x00 = failure
+	0x01 = init
+	0x02 = idle
+	0x03 = ap
+	0x04 = joining
+	0x05 = online
+0x6004	32		WiFi part number
+0x600b	1		Connected restart
+0x600d	1		Heartbeat server
+0x600e	2		Heartbeat interval
+0x6014	4		RSSI
+0x6020	14		WiFi cache config
+0x6021	1		Encryption key status
+	0x00 = key present
+	0x01 = key deleted
+0x6022	1		MFI status
+0x6023	10		HomeKit setup code
+0x6027	64		Network SSID
+0x602a	1		Log level
+	0x00 = off
+	0x01 = fatal
+	0x02 = error
+	0x03 = warn
+	0x04 = info
+0x602b	1		Missing UPD fault
+	0x00 = UPD okay
+	0x01 = UPD missing
+0x602c	1		Software update
