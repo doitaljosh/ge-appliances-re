@@ -29,5 +29,17 @@ LED matrix pin mapping:
 	P3.7	P3.6	P3.5	P3.4	P3.1	P3.0	P2.7
 P1.7	X	LED6	LED9	LED12	LED15	X	X
 P4.0	LED26	LED23	LED24	LED21	LED18	X	X
-P4.1	D1SA	D1SB	D1SG	D1SF	D1SE	D1SD	D1SC
-P4.3	D2SA	D2SB	D2SG	D2SF	F2SE	D2SD	D2SC	
+P4.1	D1SegA	D1SegB	D1SegG	D1SegF	D1SegE	D1SegD	D1SegC	(Temp readout digit 1)
+P4.3	D2SegA	D2SegB	D2SegG	D2SegF	F2SegE	D2SegD	D2SegC	(Temp readout digit 2)
+
+LED UI function:
+
+LED6 - Not provisioned
+LED9 - Not provisioned
+LED12 - Meat indicator
+LED15 - Beverages indicator
+LED18 - Snacks indicator
+LED21 - Wine indicator
+LED23 - *F 
+LED24 - *C
+LED26 - Control lock indicator
