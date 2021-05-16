@@ -1,0 +1,33 @@
+Temp select zone UI board layout
+
+SWD pin mapping:
+
+SWDIO - P3.2
+SWCLK - P3.3
+
+GEA serial pin mapping:
+
+GEA RXD - P1.0 - scb[0].uart_rx
+GEA TXD - P1.1 - scb[0].uart_tx
+
+Capsense pads pin mapping:
+
+SW2 - P0.6
+SW3 - P0.5
+SW4 - P0.4
+SW5 - P0.3
+SW6 - P0.2
+SW7 - P0.1
+SW8 - P0.0
+
+Heartbeat LED pin mapping:
+
+LED29 - P2.4
+
+LED matrix pin mapping:
+
+	P3.7	P3.6	P3.5	P3.4	P3.1	P3.0	P2.7
+P1.7	X	LED6	LED9	LED12	LED15	X	X
+P4.0	LED26	LED23	LED24	LED21	LED18	X	X
+P4.1	D1SA	D1SB	D1SG	D1SF	D1SE	D1SD	D1SC
+P4.3	D2SA	D2SB	D2SG	D2SF	F2SE	D2SD	D2SC	
