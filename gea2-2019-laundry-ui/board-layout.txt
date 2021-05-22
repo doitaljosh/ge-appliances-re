@@ -1,0 +1,45 @@
+Captouch laundry board layout:
+
+Heartbeat LED:
+
+Z101 - P5.5
+
+MC interface:
+
+GEA TXD - P7.1
+GEA RXD - P7.0
+
+Main segment display pins:
+
+DIO - P0.4
+CLK - P0.6
+STB1 - P3.5
+STB2 - P0.7
+
+Satellite board pins:
+
+TXD - P4.0
+RXD - P4.1
+DIO - P5.0
+SCLK - P5.2
+LE - P5.3
+OE - P5.1
+BUZ_VOL - P3.6
+BUZ_FREQ - P3.4
+Encoder sink - P1.6
+
+Capacitive sensors:
+
+SW100 - P2.0
+SW101 - P2.1
+SW102 - P2.2
+SW103 - P2.3
+SW104 - P2.4
+SW105 - P2.5
+SW106 - P2.6
+SW107 - P2.7
+SW108 - P6.0
+SW109 - P6.1
+SW110 - P6.2
+SW111 - P6.4
+SW112 - P3.0
