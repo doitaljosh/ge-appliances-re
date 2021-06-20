@@ -1,0 +1,97 @@
+290D2863G109 machine control
+
+Main MCU details:
+Renesas R5F52317ADFP (RX231)
+
+Redundant MCU details:
+STMicro STM8S005K6T6
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Main MCU pins:
+
+=============================UART pins:=============================
+
+RJ45 Gea3 UART:
+
+RXD		- P33 SCI6
+TXD		- P32 SCI6
+
+WiFi Gea3 UART:
+
+RXD		- P30 SCI1
+TXD		- P26 SCI1
+
+Inverter Gea3 UART:
+
+RXD		- PE2 SCI12
+TXD		- PE1 SCI12
+Speed sense	- P13 MTIOC0B
+
+Accelerometer Gea3 UART:
+
+RXD		- PB6 SCI9
+TXD		- PB7 SCI9
+
+UI Gea3 UART:
+
+RXD		- PC6 SCI8
+TXD		- PC7 SCI8
+
+Redundant MCU UART:
+
+RXD		- PC2 SCI5
+TXD		- PC3 SCI5
+
+=============================Relay pins:============================
+
+K501 (SW line inverter)	- PA2
+K503 (SW line valves)	- P15
+K505 (Damper FWD/REV)	- PA0
+
+=============================Sensor pins:===========================
+
+Pressure sensor - P44 AN004
+Thermistor	- P41 AN001
+
+=============================GPIO pins:=============================
+
+Heartbeat LED	- PD2
+Tub LED		- P17
+Inverter enable - P46
+
+=============================AC Vdet pins:==========================
+
+Lid lock fb	- P52
+Lid switch	- P53
+Damper limit sw	- PB2
+
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+Redundant MCU pins:
+
+=============================UART pins:=============================
+
+MC UART:
+
+RXD - PD6 UART2
+TXD - PD5 UART2
+
+=============================Triac pins:============================
+
+U501 (ONR)		- PD0
+U502 (disp3 valve)	- PE5
+U503 (diverter)		- PC5
+Q513 (lid switch)	- PA1
+Q514 (damper neutral)	- PA2
+Q515 (inverter)		- PC3
+Q516 (hot valve)	- PB3
+Q517 (cold valve)	- PB2
+Q520 (recirc pump)	- PC1
+Q523 (disp1 valve)	- PB1
+Q525 (disp2 valve)	- PB0
+Q553 (drain pump)	- PC4
+
+=============================Sensing pins:==========================
+
+
