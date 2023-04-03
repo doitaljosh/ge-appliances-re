@@ -1,0 +1,16 @@
+Renesas RA6T1 UltraFresh Inverter
+
+Flash offsets:
+
+Offset:		Length:		Region:
+0x0		0x400		Bootloader header
+0x400		0x5c00		Bootloader
+0x6000		0x7a000		Parametric/application
+
+Parametric/application offsets:
+
+Offset:		Length:		Region:
+0x0		0x100		Parametric header
+0x100		0x400		Application header
+0x500		0x1000		Parametric
+0x1000		0x78b00		Application		
